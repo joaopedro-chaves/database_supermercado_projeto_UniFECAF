@@ -15,8 +15,11 @@ Projeto criado para a disciplina de Banco de Dados do UniFECAF
 CREATE DATABASE db_supermercado;
 USE db_supermercado;
 
+-- Setar FOREIGN_KEY_CHECKS = 1 para habilitar as chaves estrangeiras
+SET FOREIGN_KEY_CHECKS = 1;
+
 CREATE TABLE tbl_historico_pontos (
-  id_historico_pontos INT PRIMARY KEY UNIQUE NOT NULL AUTO_INCREMENT,
+  id_historico_pontos INT PRIMARY KEY NOT NULL AUTO_INCREMENT,
   entrada_pontos VARCHAR(45) NULL,
   saida_pontos VARCHAR(45) NULL,
   fk_tbl_vendas_id_vendas INT NOT NULL,
@@ -27,10 +30,10 @@ CREATE TABLE tbl_historico_pontos (
 );
 
 CREATE TABLE tbl_fidelizacao (
-  id_fidelizacao INT PRIMARY KEY UNIQUE NOT NULL AUTO_INCREMENT,
+  id_fidelizacao INT PRIMARY KEY NOT NULL AUTO_INCREMENT,
   data_cadastro DATE NULL,
-  saldo_pontos VARCHAR(999) NULL,
-  nivel_fidelizacao FLOAT NULL,
+  saldo_pontos INT NULL,
+  nivel_fidelizacao INT NULL,
   data_ultima_atualizacao DATE NULL,
   preferencias_categoria VARCHAR(45) NULL,
   fk_tbl_historico_pontos_id_historico_pontos INT NOT NULL,
@@ -41,9 +44,9 @@ CREATE TABLE tbl_fidelizacao (
 );
 
 CREATE TABLE tbl_clientes (
-  id_clientes INT PRIMARY KEY UNIQUE NOT NULL AUTO_INCREMENT,
+  id_clientes INT PRIMARY KEY NOT NULL AUTO_INCREMENT,
   nome_cliente VARCHAR(255) NULL,
-  cpf_cliente VARCHAR(11) NULL,
+  cpf_cliente CHAR(11) NULL UNIQUE,
   num_cel_cliente VARCHAR(12) NULL,
   email_cliente VARCHAR(255) NULL,
   tbl_fidelizacao_id_fidelizacao INT NOT NULL,
@@ -54,22 +57,24 @@ CREATE TABLE tbl_clientes (
 );
 
 CREATE TABLE tbl_colaboradores (
-  id_colaboradores INT PRIMARY KEY UNIQUE NOT NULL AUTO_INCREMENT,
-  supervisor VARCHAR(45) NULL,
-  data_contratacao VARCHAR(45) NULL,
-  email_colaborador VARCHAR(45) NULL,
-  cpf_colaborador VARCHAR(45) NULL,
+  id_colaboradores INT PRIMARY KEY NOT NULL AUTO_INCREMENT,
+  nome_colaborador VARCHAR(255) NULL,
+  funcao_colaborador VARCHAR(45) NULL,
+  supervisor_colaborador VARCHAR(255) NULL, -- FK para a tabela tbl_colaboradores?
+  data_contratacao DATE NULL,
+  email_colaborador VARCHAR(255) NULL,
+  cpf_colaborador VARCHAR(11) NULL
 );
 
 CREATE TABLE tbl_endereco (
-  id_endereco INT PRIMARY KEY UNIQUE NOT NULL AUTO_INCREMENT,
-  rua VARCHAR(45) NULL,
-  bairro VARCHAR(45) NULL,
-  cidade VARCHAR(45) NULL,
-  pais VARCHAR(45) NULL,
-  cep VARCHAR(45) NULL,
-  fk_tbl_colaboradores_id_colaboradores INT NOT NULL,
-  fk_tbl_clientes_id_clientes INT NOT NULL,
+  id_endereco INT PRIMARY KEY NOT NULL AUTO_INCREMENT,
+  rua VARCHAR(45) NOT NULL,
+  bairro VARCHAR(45) NOT NULL,
+  cidade VARCHAR(45) NOT NULL,
+  pais VARCHAR(45) NOT NULL,
+  cep VARCHAR(45) NOT NULL,
+  fk_tbl_colaboradores_id_colaboradores INT,
+  fk_tbl_clientes_id_clientes INT
 
   CONSTRAINT fk_endereco_to_colaboradores
     FOREIGN KEY (fk_tbl_colaboradores_id_colaboradores)
@@ -81,10 +86,10 @@ CREATE TABLE tbl_endereco (
 );
 
 CREATE TABLE tbl_vendas (
-  id_vendas INT PRIMARY KEY UNIQUE NOT NULL AUTO_INCREMENT,
-  valor_total VARCHAR(45) NULL,
-  datahora_venda VARCHAR(45) NULL,
-  comissao_venda VARCHAR(45) NULL,
+  id_vendas INT PRIMARY KEY NOT NULL AUTO_INCREMENT,
+  valor_total DECIMAL(10,2) NULL,
+  datahora_venda DATETIME NULL,
+  comissao_venda DECIMAL(10,2) NULL,
   numero_venda VARCHAR(45) NULL,
   forma_pagamento VARCHAR(45) NULL,
   fk_tbl_colaboradores_id_colaboradores INT NOT NULL,
@@ -100,17 +105,21 @@ CREATE TABLE tbl_vendas (
 );
 
 CREATE TABLE tbl_produto (
-  id_produto INT PRIMARY KEY UNIQUE NOT NULL AUTO_INCREMENT,
+  id_produto INT PRIMARY KEY NOT NULL AUTO_INCREMENT,
   tipo_produto VARCHAR(45) NULL,
-  valor_produto VARCHAR(45) NULL,
-  quantidade_produto VARCHAR(45) NULL,
-  categoria_produto VARCHAR(45) NULL
+  valor_produto DECIMAL(10,2) NULL,
+  categoria_produto VARCHAR(45) NULL,
+  fk_tbl_estoque_id_estoque INT
+
+  CONSTRAINT fk_produto_to_estoque
+    FOREIGN KEY (fk_tbl_estoque_id_estoque)
+    REFERENCES tbl_estoque (id_estoque)
 );
 
 CREATE TABLE tbl_estoque (
-  id_estoque INT PRIMARY KEY UNIQUE NOT NULL AUTO_INCREMENT,
+  id_estoque INT PRIMARY KEY NOT NULL AUTO_INCREMENT,
   data_validade DATE NULL,
-  quantidade_estoque DECIMAL(10,3) NULL,
+  quantidade_estoque INT NULL,
   lote_estoque VARCHAR(45) NULL,
   data_entrada DATE NULL,
   fk_tbl_produto_id_produto INT NOT NULL,
@@ -121,7 +130,7 @@ CREATE TABLE tbl_estoque (
 );
 
 CREATE TABLE tbl_produto_venda (
-  id_produto_venda INT PRIMARY KEY UNIQUE NOT NULL AUTO_INCREMENT,
+  id_produto_venda INT PRIMARY KEY NOT NULL AUTO_INCREMENT,
   valor_total_itens VARCHAR(45) NULL,
   fk_tbl_produto_id_produto INT NOT NULL,
   fk_tbl_vendas_id_vendas INT NOT NULL,
