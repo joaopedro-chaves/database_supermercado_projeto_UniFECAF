@@ -60,7 +60,7 @@ CREATE TABLE tbl_colaboradores (
   id_colaboradores INT PRIMARY KEY NOT NULL AUTO_INCREMENT,
   nome_colaborador VARCHAR(255) NULL,
   funcao_colaborador VARCHAR(45) NULL,
-  supervisor_colaborador VARCHAR(255) NULL, -- FK para a tabela tbl_colaboradores?
+  supervisor_colaborador VARCHAR(255) NULL, -- FK para a tabela tbl_supervisor?
   data_contratacao DATE NULL,
   email_colaborador VARCHAR(255) NULL,
   cpf_colaborador VARCHAR(11) NULL
