@@ -15,12 +15,30 @@ Projeto criado para a disciplina de Banco de Dados do UniFECAF
 CREATE DATABASE db_supermercado;
 USE db_supermercado;
 
--- Desativar checagem de chaves estrangeiras temporariamente devido às dependências circulares
-SET FOREIGN_KEY_CHECKS = 0;
+CREATE TABLE tbl_historico_pontos (
+  id_historico_pontos INT PRIMARY KEY UNIQUE NOT NULL AUTO_INCREMENT,
+  entrada_pontos VARCHAR(45) NULL,
+  saida_pontos VARCHAR(45) NULL,
+  fk_tbl_vendas_id_vendas INT NOT NULL,
 
-/* ==========================================
---     Cliente
-========================================== */
+  CONSTRAINT fk_historico_pontos_to_vendas
+    FOREIGN KEY (fk_tbl_vendas_id_vendas)
+    REFERENCES tbl_vendas (id_vendas)
+);
+
+CREATE TABLE tbl_fidelizacao (
+  id_fidelizacao INT PRIMARY KEY UNIQUE NOT NULL AUTO_INCREMENT,
+  data_cadastro DATE NULL,
+  saldo_pontos VARCHAR(999) NULL,
+  nivel_fidelizacao FLOAT NULL,
+  data_ultima_atualizacao DATE NULL,
+  preferencias_categoria VARCHAR(45) NULL,
+  fk_tbl_historico_pontos_id_historico_pontos INT NOT NULL,
+
+  CONSTRAINT fk_fidelizacao_to_historico_pontos
+    FOREIGN KEY (fk_tbl_historico_pontos_id_historico_pontos)
+    REFERENCES tbl_historico_pontos (id_historico_pontos)
+);
 
 CREATE TABLE tbl_clientes (
   id_clientes INT PRIMARY KEY UNIQUE NOT NULL AUTO_INCREMENT,
@@ -35,26 +53,32 @@ CREATE TABLE tbl_clientes (
     REFERENCES tbl_fidelizacao (id_fidelizacao)
 );
 
-/* ==========================================
---     Colaboradores
-========================================== */
-
 CREATE TABLE tbl_colaboradores (
   id_colaboradores INT PRIMARY KEY UNIQUE NOT NULL AUTO_INCREMENT,
   supervisor VARCHAR(45) NULL,
   data_contratacao VARCHAR(45) NULL,
   email_colaborador VARCHAR(45) NULL,
   cpf_colaborador VARCHAR(45) NULL,
-  fk_tbl_endereco_id_endereco INT NOT NULL,
-
-  CONSTRAINT fk_tbl_endereco_id_endereco 
-    FOREIGN KEY (fk_tbl_endereco_id_endereco) 
-    REFERENCES tbl_endereco (id_endereco)
 );
 
-/* ==========================================
---     Venda
-========================================== */
+CREATE TABLE tbl_endereco (
+  id_endereco INT PRIMARY KEY UNIQUE NOT NULL AUTO_INCREMENT,
+  rua VARCHAR(45) NULL,
+  bairro VARCHAR(45) NULL,
+  cidade VARCHAR(45) NULL,
+  pais VARCHAR(45) NULL,
+  cep VARCHAR(45) NULL,
+  fk_tbl_colaboradores_id_colaboradores INT NOT NULL,
+  fk_tbl_clientes_id_clientes INT NOT NULL,
+
+  CONSTRAINT fk_endereco_to_colaboradores
+    FOREIGN KEY (fk_tbl_colaboradores_id_colaboradores)
+    REFERENCES tbl_colaboradores (id_colaboradores),
+
+  CONSTRAINT fk_endereco_to_clientes
+    FOREIGN KEY (fk_tbl_clientes_id_clientes)
+    REFERENCES tbl_clientes (id_clientes)
+);
 
 CREATE TABLE tbl_vendas (
   id_vendas INT PRIMARY KEY UNIQUE NOT NULL AUTO_INCREMENT,
@@ -111,52 +135,3 @@ CREATE TABLE tbl_produto_venda (
     REFERENCES tbl_vendas (id_vendas)
 );
 
-/* ==========================================
---     Fidelização
-========================================== */
-
-CREATE TABLE tbl_fidelizacao (
-  id_fidelizacao INT PRIMARY KEY UNIQUE NOT NULL AUTO_INCREMENT,
-  data_cadastro DATE NULL,
-  saldo_pontos VARCHAR(999) NULL,
-  nivel_fidelizacao FLOAT NULL,
-  data_ultima_atualizacao DATE NULL,
-  preferencias_categoria VARCHAR(45) NULL,
-  fk_tbl_historico_pontos_id_historico_pontos INT NOT NULL,
-
-  CONSTRAINT fk_fidelizacao_to_historico_pontos
-    FOREIGN KEY (fk_tbl_historico_pontos_id_historico_pontos)
-    REFERENCES tbl_historico_pontos (id_historico_pontos)
-);
-
-CREATE TABLE tbl_historico_pontos (
-  id_historico_pontos INT PRIMARY KEY UNIQUE NOT NULL AUTO_INCREMENT,
-  entrada_pontos VARCHAR(45) NULL,
-  saida_pontos VARCHAR(45) NULL,
-  fk_tbl_vendas_id_vendas INT NOT NULL,
-
-  CONSTRAINT fk_historico_pontos_to_vendas
-    FOREIGN KEY (fk_tbl_vendas_id_vendas)
-    REFERENCES tbl_vendas (id_vendas)
-);
-
-/* ==========================================
---     Endereço
-========================================== */
-
-CREATE TABLE tbl_endereco (
-  id_endereco INT PRIMARY KEY UNIQUE NOT NULL AUTO_INCREMENT,
-  rua VARCHAR(45) NULL,
-  bairro VARCHAR(45) NULL,
-  cidade VARCHAR(45) NULL,
-  pais VARCHAR(45) NULL,
-  cep VARCHAR(45) NULL,
-  fk_tbl_colaboradores_id_colaboradores INT NOT NULL,
-
-  CONSTRAINT fk_endereco_to_colaboradores
-    FOREIGN KEY (fk_tbl_colaboradores_id_colaboradores)
-    REFERENCES tbl_colaboradores (id_colaboradores)
-);
-
--- Reativar checagem de chaves estrangeiras
-SET FOREIGN_KEY_CHECKS = 1;
