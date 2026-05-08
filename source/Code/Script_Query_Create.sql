@@ -17,7 +17,7 @@ CREATE DATABASE db_supermercado;
 USE db_supermercado;
 
 -- Setar FOREIGN_KEY_CHECKS = 1 para habilitar as chaves estrangeiras
-SET FOREIGN_KEY_CHECKS = 1;
+SET FOREIGN_KEY_CHECKS = 0;
 
 CREATE TABLE tbl_historico_pontos (
     id_historico_pontos INT PRIMARY KEY NOT NULL AUTO_INCREMENT,
@@ -44,8 +44,8 @@ CREATE TABLE tbl_clientes (
     id_clientes INT PRIMARY KEY NOT NULL AUTO_INCREMENT,
     nome_cliente VARCHAR(255) NULL,
     cpf_cliente CHAR(11) NULL UNIQUE,
-    num_cel_cliente VARCHAR(12) NULL,
-    email_cliente VARCHAR(255) NULL,
+    num_cel_cliente VARCHAR(12) NULL UNIQUE,
+    email_cliente VARCHAR(255) NULL UNIQUE,
     tbl_fidelizacao_id_fidelizacao INT NOT NULL,
     CONSTRAINT fk_clientes_to_fidelizacao FOREIGN KEY (
         tbl_fidelizacao_id_fidelizacao
@@ -56,10 +56,22 @@ CREATE TABLE tbl_colaboradores (
     id_colaboradores INT PRIMARY KEY NOT NULL AUTO_INCREMENT,
     nome_colaborador VARCHAR(255) NULL,
     funcao_colaborador VARCHAR(45) NULL,
-    supervisor_colaborador VARCHAR(255) NULL, -- FK para a tabela tbl_supervisor?
     data_contratacao DATE NULL,
-    email_colaborador VARCHAR(255) NULL,
-    cpf_colaborador VARCHAR(11) NULL
+    email_colaborador VARCHAR(255) NULL UNIQUE,
+    cpf_colaborador VARCHAR(11) NULL UNIQUE,
+);
+
+CREATE TABLE tbl_supervisor (
+    id_supervisor INT PRIMARY KEY NOT NULL AUTO_INCREMENT,
+    nome_supervisor VARCHAR(255) NULL,
+    funcao_supervisor VARCHAR(45) NULL,
+    data_contratacao DATE NULL,
+    email_supervisor VARCHAR(255) NULL UNIQUE,
+    cpf_supervisor VARCHAR(11) NULL UNIQUE,
+    fk_tbl_colaboradores_id_colaboradores INT,
+    CONSTRAINT fk_supervisor_to_colaboradores FOREIGN KEY (
+        fk_tbl_colaboradores_id_colaboradores
+    ) REFERENCES tbl_colaboradores (id_colaboradores)
 );
 
 CREATE TABLE tbl_endereco (
@@ -70,7 +82,8 @@ CREATE TABLE tbl_endereco (
     pais VARCHAR(45) NOT NULL,
     cep VARCHAR(45) NOT NULL,
     fk_tbl_colaboradores_id_colaboradores INT,
-    fk_tbl_clientes_id_clientes INT CONSTRAINT fk_endereco_to_colaboradores FOREIGN KEY (
+    fk_tbl_clientes_id_clientes INT,
+    CONSTRAINT fk_endereco_to_colaboradores FOREIGN KEY (
         fk_tbl_colaboradores_id_colaboradores
     ) REFERENCES tbl_colaboradores (id_colaboradores),
     CONSTRAINT fk_endereco_to_clientes FOREIGN KEY (fk_tbl_clientes_id_clientes) REFERENCES tbl_clientes (id_clientes)
@@ -96,7 +109,8 @@ CREATE TABLE tbl_produto (
     tipo_produto VARCHAR(45) NULL,
     valor_produto DECIMAL(10, 2) NULL,
     categoria_produto VARCHAR(45) NULL,
-    fk_tbl_estoque_id_estoque INT CONSTRAINT fk_produto_to_estoque FOREIGN KEY (fk_tbl_estoque_id_estoque) REFERENCES tbl_estoque (id_estoque)
+    fk_tbl_estoque_id_estoque INT,
+    CONSTRAINT fk_produto_to_estoque FOREIGN KEY (fk_tbl_estoque_id_estoque) REFERENCES tbl_estoque (id_estoque)
 );
 
 CREATE TABLE tbl_estoque (
