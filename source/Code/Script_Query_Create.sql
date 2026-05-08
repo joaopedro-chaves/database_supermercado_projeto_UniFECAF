@@ -16,15 +16,37 @@ CREATE DATABASE db_supermercado;
 
 USE db_supermercado;
 
--- Setar FOREIGN_KEY_CHECKS = 1 para habilitar as chaves estrangeiras
 SET FOREIGN_KEY_CHECKS = 0;
 
-CREATE TABLE tbl_historico_pontos (
-    id_historico_pontos INT PRIMARY KEY NOT NULL AUTO_INCREMENT,
-    entrada_pontos VARCHAR(45) NULL,
-    saida_pontos VARCHAR(45) NULL,
-    fk_tbl_vendas_id_vendas INT NOT NULL,
-    CONSTRAINT fk_historico_pontos_to_vendas FOREIGN KEY (fk_tbl_vendas_id_vendas) REFERENCES tbl_vendas (id_vendas)
+CREATE TABLE tbl_colaboradores (
+    id_colaboradores INT PRIMARY KEY NOT NULL AUTO_INCREMENT,
+    nome_colaborador VARCHAR(255) NULL,
+    funcao_colaborador VARCHAR(45) NULL,
+    data_contratacao DATE NULL,
+    email_colaborador VARCHAR(255) NULL UNIQUE,
+    cpf_colaborador CHAR(11) NULL UNIQUE,
+    fk_id_supervisor INT NULL,
+    -- Referência para evitar recursividade
+    CONSTRAINT fk_colaborador_supervisor FOREIGN KEY (fk_id_supervisor) REFERENCES tbl_colaboradores (id_colaboradores)
+);
+
+CREATE TABLE tbl_produto (
+    id_produto INT PRIMARY KEY NOT NULL AUTO_INCREMENT,
+    nome_produto VARCHAR(255) NULL,
+    tipo_produto VARCHAR(45) NULL,
+    valor_produto DECIMAL(10, 2) NULL,
+    quantidade_produto INT NOT NULL,
+    categoria_produto VARCHAR(45) NULL
+);
+
+CREATE TABLE tbl_estoque (
+    id_estoque INT PRIMARY KEY NOT NULL AUTO_INCREMENT,
+    data_validade DATE NOT NULL,
+    lote_produto VARCHAR(45) NOT NULL,
+    quantidade_estoque INT NOT NULL,
+    data_entrada DATE NOT NULL,
+    fk_tbl_produto_id_produto INT NOT NULL,
+    CONSTRAINT fk_estoque_to_produto FOREIGN KEY (fk_tbl_produto_id_produto) REFERENCES tbl_produto (id_produto)
 );
 
 CREATE TABLE tbl_fidelizacao (
@@ -33,11 +55,7 @@ CREATE TABLE tbl_fidelizacao (
     saldo_pontos INT NULL,
     nivel_fidelizacao INT NULL,
     data_ultima_atualizacao DATE NULL,
-    preferencias_categoria VARCHAR(45) NULL,
-    fk_tbl_historico_pontos_id_historico_pontos INT NOT NULL,
-    CONSTRAINT fk_fidelizacao_to_historico_pontos FOREIGN KEY (
-        fk_tbl_historico_pontos_id_historico_pontos
-    ) REFERENCES tbl_historico_pontos (id_historico_pontos)
+    preferencias_categoria VARCHAR(45) NULL
 );
 
 CREATE TABLE tbl_clientes (
@@ -52,35 +70,13 @@ CREATE TABLE tbl_clientes (
     ) REFERENCES tbl_fidelizacao (id_fidelizacao)
 );
 
-CREATE TABLE tbl_colaboradores (
-    id_colaboradores INT PRIMARY KEY NOT NULL AUTO_INCREMENT,
-    nome_colaborador VARCHAR(255) NULL,
-    funcao_colaborador VARCHAR(45) NULL,
-    data_contratacao DATE NULL,
-    email_colaborador VARCHAR(255) NULL UNIQUE,
-    cpf_colaborador VARCHAR(11) NULL UNIQUE,
-);
-
-CREATE TABLE tbl_supervisor (
-    id_supervisor INT PRIMARY KEY NOT NULL AUTO_INCREMENT,
-    nome_supervisor VARCHAR(255) NULL,
-    funcao_supervisor VARCHAR(45) NULL,
-    data_contratacao DATE NULL,
-    email_supervisor VARCHAR(255) NULL UNIQUE,
-    cpf_supervisor VARCHAR(11) NULL UNIQUE,
-    fk_tbl_colaboradores_id_colaboradores INT,
-    CONSTRAINT fk_supervisor_to_colaboradores FOREIGN KEY (
-        fk_tbl_colaboradores_id_colaboradores
-    ) REFERENCES tbl_colaboradores (id_colaboradores)
-);
-
 CREATE TABLE tbl_endereco (
     id_endereco INT PRIMARY KEY NOT NULL AUTO_INCREMENT,
     rua VARCHAR(45) NOT NULL,
     bairro VARCHAR(45) NOT NULL,
     cidade VARCHAR(45) NOT NULL,
     pais VARCHAR(45) NOT NULL,
-    cep VARCHAR(45) NOT NULL,
+    cep VARCHAR(9) NOT NULL,
     fk_tbl_colaboradores_id_colaboradores INT,
     fk_tbl_clientes_id_clientes INT,
     CONSTRAINT fk_endereco_to_colaboradores FOREIGN KEY (
@@ -104,30 +100,27 @@ CREATE TABLE tbl_vendas (
     CONSTRAINT fk_vendas_to_clientes FOREIGN KEY (fk_tbl_clientes_id_clientes) REFERENCES tbl_clientes (id_clientes)
 );
 
-CREATE TABLE tbl_produto (
-    id_produto INT PRIMARY KEY NOT NULL AUTO_INCREMENT,
-    tipo_produto VARCHAR(45) NULL,
-    valor_produto DECIMAL(10, 2) NULL,
-    categoria_produto VARCHAR(45) NULL,
-    fk_tbl_estoque_id_estoque INT,
-    CONSTRAINT fk_produto_to_estoque FOREIGN KEY (fk_tbl_estoque_id_estoque) REFERENCES tbl_estoque (id_estoque)
-);
-
-CREATE TABLE tbl_estoque (
-    id_estoque INT PRIMARY KEY NOT NULL AUTO_INCREMENT,
-    data_validade DATE NULL,
-    quantidade_estoque INT NULL,
-    lote_estoque VARCHAR(45) NULL,
-    data_entrada DATE NULL,
-    fk_tbl_produto_id_produto INT NOT NULL,
-    CONSTRAINT fk_estoque_to_produto FOREIGN KEY (fk_tbl_produto_id_produto) REFERENCES tbl_produto (id_produto)
+CREATE TABLE tbl_historico_pontos (
+    id_historico_pontos INT PRIMARY KEY NOT NULL AUTO_INCREMENT,
+    entrada_pontos INT NOT NULL,
+    saida_pontos INT NOT NULL,
+    data_hora_pontos DATETIME NOT NULL,
+    fk_tbl_vendas_id_vendas INT NOT NULL,
+    fk_tbl_fidelizacao_id_fidelizacao INT NOT NULL,
+    CONSTRAINT fk_historico_pontos_to_vendas FOREIGN KEY (fk_tbl_vendas_id_vendas) REFERENCES tbl_vendas (id_vendas),
+    CONSTRAINT fk_historico_pontos_to_fidelizacao FOREIGN KEY (
+        fk_tbl_fidelizacao_id_fidelizacao
+    ) REFERENCES tbl_fidelizacao (id_fidelizacao)
 );
 
 CREATE TABLE tbl_produto_venda (
     id_produto_venda INT PRIMARY KEY NOT NULL AUTO_INCREMENT,
-    valor_total_itens VARCHAR(45) NULL,
+    quantidade_produto INT NOT NULL,
+    valor_total_itens DECIMAL(10, 2) NULL,
     fk_tbl_produto_id_produto INT NOT NULL,
     fk_tbl_vendas_id_vendas INT NOT NULL,
     CONSTRAINT fk_produto_venda_to_produto FOREIGN KEY (fk_tbl_produto_id_produto) REFERENCES tbl_produto (id_produto),
     CONSTRAINT fk_produto_venda_to_vendas FOREIGN KEY (fk_tbl_vendas_id_vendas) REFERENCES tbl_vendas (id_vendas)
 );
+
+SET FOREIGN_KEY_CHECKS = 1;
