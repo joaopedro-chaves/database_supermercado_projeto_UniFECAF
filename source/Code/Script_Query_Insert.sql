@@ -598,19 +598,17 @@ VALUES (
     );
 
 -- ============================================================
--- tbl_endereco (colaboradores e clientes)
+-- tbl_endereco_colaborador
 -- ============================================================
 
--- Endereços de colaboradores
 INSERT INTO
-    tbl_endereco (
+    tbl_endereco_colaborador (
         rua,
         bairro,
         cidade,
         pais,
         cep,
-        fk_tbl_colaboradores_id_colaboradores,
-        fk_tbl_clientes_id_clientes
+        fk_tbl_colaboradores_id_colaboradores
     )
 VALUES (
         'Rua das Flores, 45',
@@ -618,8 +616,7 @@ VALUES (
         'São Paulo',
         'Brasil',
         '01001-000',
-        1,
-        NULL
+        1
     ),
     (
         'Av. Paulista, 1200',
@@ -627,8 +624,7 @@ VALUES (
         'São Paulo',
         'Brasil',
         '01310-100',
-        2,
-        NULL
+        2
     ),
     (
         'Rua Oscar Freire, 88',
@@ -636,8 +632,7 @@ VALUES (
         'São Paulo',
         'Brasil',
         '01426-001',
-        3,
-        NULL
+        3
     ),
     (
         'Rua Vergueiro, 320',
@@ -645,8 +640,7 @@ VALUES (
         'São Paulo',
         'Brasil',
         '01504-000',
-        4,
-        NULL
+        4
     ),
     (
         'Av. Rebouças, 550',
@@ -654,8 +648,7 @@ VALUES (
         'São Paulo',
         'Brasil',
         '05401-300',
-        5,
-        NULL
+        5
     ),
     (
         'Rua Augusta, 700',
@@ -663,8 +656,7 @@ VALUES (
         'São Paulo',
         'Brasil',
         '01305-000',
-        6,
-        NULL
+        6
     ),
     (
         'Rua da Mooca, 1100',
@@ -672,8 +664,7 @@ VALUES (
         'São Paulo',
         'Brasil',
         '03103-000',
-        7,
-        NULL
+        7
     ),
     (
         'Av. Ibirapuera, 200',
@@ -681,8 +672,7 @@ VALUES (
         'São Paulo',
         'Brasil',
         '04029-000',
-        8,
-        NULL
+        8
     ),
     (
         'Rua Haddock Lobo, 50',
@@ -690,8 +680,7 @@ VALUES (
         'São Paulo',
         'Brasil',
         '01414-002',
-        9,
-        NULL
+        9
     ),
     (
         'Av. Santo Amaro, 980',
@@ -699,19 +688,20 @@ VALUES (
         'São Paulo',
         'Brasil',
         '04506-001',
-        10,
-        NULL
+        10
     );
 
--- Endereços de clientes
+-- ============================================================
+-- tbl_endereco_cliente
+-- ============================================================
+
 INSERT INTO
-    tbl_endereco (
+    tbl_endereco_cliente (
         rua,
         bairro,
         cidade,
         pais,
         cep,
-        fk_tbl_colaboradores_id_colaboradores,
         fk_tbl_clientes_id_clientes
     )
 VALUES (
@@ -720,7 +710,6 @@ VALUES (
         'São Paulo',
         'Brasil',
         '04007-001',
-        NULL,
         1
     ),
     (
@@ -729,7 +718,6 @@ VALUES (
         'São Paulo',
         'Brasil',
         '01307-001',
-        NULL,
         2
     ),
     (
@@ -738,7 +726,6 @@ VALUES (
         'São Paulo',
         'Brasil',
         '01430-001',
-        NULL,
         3
     ),
     (
@@ -747,7 +734,6 @@ VALUES (
         'São Paulo',
         'Brasil',
         '01215-020',
-        NULL,
         4
     ),
     (
@@ -756,7 +742,6 @@ VALUES (
         'São Paulo',
         'Brasil',
         '01434-000',
-        NULL,
         5
     ),
     (
@@ -765,7 +750,6 @@ VALUES (
         'São Paulo',
         'Brasil',
         '01228-000',
-        NULL,
         6
     ),
     (
@@ -774,7 +758,6 @@ VALUES (
         'São Paulo',
         'Brasil',
         '01415-001',
-        NULL,
         7
     ),
     (
@@ -783,7 +766,6 @@ VALUES (
         'São Paulo',
         'Brasil',
         '01332-000',
-        NULL,
         8
     ),
     (
@@ -792,7 +774,6 @@ VALUES (
         'São Paulo',
         'Brasil',
         '01313-902',
-        NULL,
         9
     ),
     (
@@ -801,7 +782,6 @@ VALUES (
         'São Paulo',
         'Brasil',
         '01448-000',
-        NULL,
         10
     );
 
@@ -1079,7 +1059,7 @@ VALUES (
 
 INSERT INTO
     tbl_produto_venda (
-        quantidade_produto,
+        quantidade_vendida,
         valor_total_itens,
         fk_tbl_produto_id_produto,
         fk_tbl_vendas_id_vendas
