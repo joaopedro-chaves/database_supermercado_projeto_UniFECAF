@@ -70,7 +70,7 @@ LIMIT 5;
 
 -- 5. Exibir os detalhes de uma venda específica (ex: a venda 'VND-2026-0005')
 -- Mostra os produtos, quantidades e subtotais que compõem uma venda.
-SELECT v.numero_venda AS 'Nº da Venda', c.nome_cliente AS 'Cliente', p.nome_produto AS 'Produto', pv.quantidade_produto AS 'Quantidade', CONCAT(
+SELECT v.numero_venda AS 'Nº da Venda', c.nome_cliente AS 'Cliente', p.nome_produto AS 'Produto', pv.quantidade_vendida AS 'Quantidade', CONCAT(
         'R$ ',
         REPLACE (
                 FORMAT(p.valor_produto, 2), ',', '.'
@@ -92,7 +92,7 @@ ORDER BY pv.valor_total_itens DESC;
 
 -- 6. Relatório de Vendas (Faturamento) por Categoria de Produto
 -- Mostra quais categorias de produtos geram mais receita para o supermercado.
-SELECT p.categoria_produto AS 'Categoria', SUM(pv.quantidade_produto) AS 'Quantidade Vendida', CONCAT(
+SELECT p.categoria_produto AS 'Categoria', SUM(pv.quantidade_vendida) AS 'Quantidade Vendida', CONCAT(
         'R$ ',
         REPLACE (
                 FORMAT(SUM(pv.valor_total_itens), 2), ',', '.'
@@ -121,22 +121,12 @@ ORDER BY hp.data_hora_pontos DESC;
 
 -- 8. Visão Geral de Endereços (Clientes vs Colaboradores)
 -- Retorna os endereços separando se pertencem a um colaborador ou a um cliente.
-SELECT
-    ec.rua AS 'Rua',
-    ec.bairro AS 'Bairro',
-    ec.cidade AS 'Cidade',
-    'Colaborador' AS 'Tipo de Vínculo',
-    c.nome_colaborador AS 'Nome'
+SELECT ec.rua AS 'Rua', ec.bairro AS 'Bairro', ec.cidade AS 'Cidade', 'Colaborador' AS 'Tipo de Vínculo', c.nome_colaborador AS 'Nome'
 FROM
     tbl_endereco_colaborador ec
     INNER JOIN tbl_colaboradores c ON ec.fk_tbl_colaboradores_id_colaboradores = c.id_colaboradores
 UNION ALL
-SELECT
-    ecl.rua AS 'Rua',
-    ecl.bairro AS 'Bairro',
-    ecl.cidade AS 'Cidade',
-    'Cliente' AS 'Tipo de Vínculo',
-    cl.nome_cliente AS 'Nome'
+SELECT ecl.rua AS 'Rua', ecl.bairro AS 'Bairro', ecl.cidade AS 'Cidade', 'Cliente' AS 'Tipo de Vínculo', cl.nome_cliente AS 'Nome'
 FROM
     tbl_endereco_cliente ecl
     INNER JOIN tbl_clientes cl ON ecl.fk_tbl_clientes_id_clientes = cl.id_clientes
