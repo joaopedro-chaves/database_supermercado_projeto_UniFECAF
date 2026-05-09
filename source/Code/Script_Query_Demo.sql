@@ -4,7 +4,7 @@ SQL Script para demonstrar o funcionamento do banco de dados e das tabelas para 
 
 Author: João Pedro Vieira da Costa Chaves
 Date: 2026/05/08
-Version: 1.0.0
+Version: 2.0.0
 
 About the project: [https://github.com/joaopedro-chaves/database_supermercado_projeto_UniFECAF]
 
