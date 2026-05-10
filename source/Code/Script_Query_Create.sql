@@ -19,20 +19,24 @@ USE db_supermercado;
 CREATE TABLE tbl_colaboradores (
     id_colaboradores INT PRIMARY KEY NOT NULL AUTO_INCREMENT,
     nome_colaborador VARCHAR(255) NOT NULL,
-    funcao_colaborador VARCHAR(45) NOT NULL,
+    funcao_colaborador ENUM(
+        'Atendente',
+        'Supervisor',
+        'Gerente'
+    ) NOT NULL,
     data_contratacao DATE NOT NULL,
     email_colaborador VARCHAR(255) NOT NULL UNIQUE,
     cpf_colaborador CHAR(11) NOT NULL UNIQUE,
     fk_id_supervisor INT NOT NULL,
     -- Chave estrangeira para evitar recursividade
-    CONSTRAINT fk_colaborador_supervisor FOREIGN KEY (fk_id_supervisor) REFERENCES tbl_colaboradores (id_colaboradores)
+    CONSTRAINT fk_colaborador_supervisor FOREIGN KEY (fk_id_supervisor) REFERENCES tbl_colaboradores (id_colaboradores) ON DELETE RESTRICT
 );
 
 CREATE TABLE tbl_produto (
     id_produto INT PRIMARY KEY NOT NULL AUTO_INCREMENT,
     nome_produto VARCHAR(255) NOT NULL,
     tipo_produto VARCHAR(45) NOT NULL,
-    valor_produto DECIMAL(10, 2) NOT NULL,
+    valor_produto DECIMAL(10, 2) NOT NULL CHECK (valor_produto > 0),
     quantidade_produto INT NOT NULL,
     categoria_produto VARCHAR(45) NOT NULL
 );
@@ -41,19 +45,19 @@ CREATE TABLE tbl_estoque (
     id_estoque INT PRIMARY KEY NOT NULL AUTO_INCREMENT,
     data_validade DATE NOT NULL,
     lote_estoque VARCHAR(45) NOT NULL,
-    quantidade_estoque INT NOT NULL,
+    quantidade_estoque INT NOT NULL CHECK (quantidade_estoque >= 0),
     data_entrada DATE NOT NULL,
     fk_tbl_produto_id_produto INT NOT NULL,
-    CONSTRAINT fk_estoque_to_produto FOREIGN KEY (fk_tbl_produto_id_produto) REFERENCES tbl_produto (id_produto)
+    CONSTRAINT fk_estoque_to_produto FOREIGN KEY (fk_tbl_produto_id_produto) REFERENCES tbl_produto (id_produto) ON DELETE RESTRICT
 );
 
 CREATE TABLE tbl_fidelizacao (
     id_fidelizacao INT PRIMARY KEY NOT NULL AUTO_INCREMENT,
-    data_cadastro DATE NOT NULL,
+    data_cadastro DATE NOT NULL DEFAULT(CURRENT_DATE),
     saldo_pontos INT NOT NULL DEFAULT 0,
     nivel_fidelizacao INT NOT NULL DEFAULT 1,
-    data_ultima_atualizacao DATE NOT NULL,
-    preferencias_categoria VARCHAR(45) NOT NULL
+    data_ultima_atualizacao TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+    preferencias_categoria VARCHAR(45) NULL
 );
 
 CREATE TABLE tbl_clientes (
@@ -63,9 +67,13 @@ CREATE TABLE tbl_clientes (
     num_cel_cliente VARCHAR(12) NOT NULL UNIQUE,
     email_cliente VARCHAR(255) NOT NULL UNIQUE,
     tbl_fidelizacao_id_fidelizacao INT, -- O cliente pode ou não ter um programa de fidelização, definido pela regra de negócio.
-    CONSTRAINT fk_clientes_to_fidelizacao FOREIGN KEY (tbl_fidelizacao_id_fidelizacao) REFERENCES tbl_fidelizacao (id_fidelizacao),
+    CONSTRAINT fk_clientes_to_fidelizacao FOREIGN KEY (
+        tbl_fidelizacao_id_fidelizacao
+    ) REFERENCES tbl_fidelizacao (id_fidelizacao) ON DELETE RESTRICT,
     -- Verifica se os valores de CPF são válidos
-    CHECK (cpf_cliente REGEXP '^[0-9]{11}$')
+    CHECK (
+        cpf_cliente REGEXP '^[0-9]{11}$'
+    )
 );
 
 CREATE TABLE tbl_endereco_colaborador (
@@ -78,7 +86,7 @@ CREATE TABLE tbl_endereco_colaborador (
     fk_tbl_colaboradores_id_colaboradores INT NOT NULL UNIQUE,
     CONSTRAINT fk_endereco_colaborador_to_colaboradores FOREIGN KEY (
         fk_tbl_colaboradores_id_colaboradores
-    ) REFERENCES tbl_colaboradores (id_colaboradores)
+    ) REFERENCES tbl_colaboradores (id_colaboradores) ON DELETE RESTRICT
 );
 
 CREATE TABLE tbl_endereco_cliente (
@@ -94,8 +102,10 @@ CREATE TABLE tbl_endereco_cliente (
 
 CREATE TABLE tbl_vendas (
     id_vendas INT PRIMARY KEY NOT NULL AUTO_INCREMENT,
-    valor_total DECIMAL(10, 2) NOT NULL,
-    datahora_venda DATETIME NOT NULL,
+    valor_bruto DECIMAL(10, 2) NOT NULL,
+    valor_desconto DECIMAL(10, 2) DEFAULT 0, -- Regra: Aplicado na finalização da venda
+    valor_total_liquido DECIMAL(10, 2) NOT NULL,
+    datahora_venda DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
     comissao_venda DECIMAL(10, 2) NOT NULL,
     numero_venda VARCHAR(45) NOT NULL UNIQUE,
     forma_pagamento VARCHAR(45) NOT NULL,
@@ -103,10 +113,13 @@ CREATE TABLE tbl_vendas (
     fk_tbl_clientes_id_clientes INT NOT NULL,
     CONSTRAINT fk_vendas_to_colaboradores FOREIGN KEY (
         fk_tbl_colaboradores_id_colaboradores
-    ) REFERENCES tbl_colaboradores (id_colaboradores),
-    CONSTRAINT fk_vendas_to_clientes FOREIGN KEY (fk_tbl_clientes_id_clientes) REFERENCES tbl_clientes (id_clientes),
+    ) REFERENCES tbl_colaboradores (id_colaboradores) ON DELETE RESTRICT,
+    CONSTRAINT fk_vendas_to_clientes FOREIGN KEY (fk_tbl_clientes_id_clientes) REFERENCES tbl_clientes (id_clientes) ON DELETE RESTRICT,
     -- Verifica se os valores são válidos ou positivos.
-    CHECK (valor_total > 0 AND comissao_venda > 0)
+    CHECK (
+        valor_total > 0
+        AND comissao_venda > 0
+    )
 );
 
 CREATE TABLE tbl_historico_pontos (
@@ -116,20 +129,19 @@ CREATE TABLE tbl_historico_pontos (
     data_hora_pontos DATETIME NOT NULL,
     fk_tbl_vendas_id_vendas INT NULL,
     fk_tbl_fidelizacao_id_fidelizacao INT NULL,
-    CONSTRAINT fk_historico_pontos_to_vendas FOREIGN KEY (fk_tbl_vendas_id_vendas) REFERENCES tbl_vendas (id_vendas),
+    CONSTRAINT fk_historico_pontos_to_vendas FOREIGN KEY (fk_tbl_vendas_id_vendas) REFERENCES tbl_vendas (id_vendas) ON DELETE RESTRICT,
     CONSTRAINT fk_historico_pontos_to_fidelizacao FOREIGN KEY (
         fk_tbl_fidelizacao_id_fidelizacao
-    ) REFERENCES tbl_fidelizacao (id_fidelizacao)
+    ) REFERENCES tbl_fidelizacao (id_fidelizacao) ON DELETE RESTRICT
 );
 
 CREATE TABLE tbl_produto_venda (
     id_produto_venda INT PRIMARY KEY NOT NULL AUTO_INCREMENT,
-    quantidade_vendida INT NOT NULL,
-    valor_total_itens DECIMAL(10, 2) NOT NULL,
+    quantidade_vendida INT NOT NULL CHECK (quantidade_vendida > 0),
+    preco_unitario_praticado DECIMAL(10, 2) NOT NULL,
     fk_tbl_produto_id_produto INT NOT NULL,
     fk_tbl_vendas_id_vendas INT NOT NULL,
-    CONSTRAINT fk_produto_venda_to_produto FOREIGN KEY (fk_tbl_produto_id_produto) REFERENCES tbl_produto (id_produto),
-    CONSTRAINT fk_produto_venda_to_vendas FOREIGN KEY (fk_tbl_vendas_id_vendas) REFERENCES tbl_vendas (id_vendas),
+    CONSTRAINT fk_produto_venda_to_produto FOREIGN KEY (fk_tbl_produto_id_produto) REFERENCES tbl_produto (id_produto) ON DELETE RESTRICT,
+    CONSTRAINT fk_produto_venda_to_vendas FOREIGN KEY (fk_tbl_vendas_id_vendas) REFERENCES tbl_vendas (id_vendas) ON DELETE RESTRICT,
     -- Verifica se os valores são válidos ou positivos.
-    CHECK (quantidade_vendida > 0 AND valor_total_itens > 0)
 );
