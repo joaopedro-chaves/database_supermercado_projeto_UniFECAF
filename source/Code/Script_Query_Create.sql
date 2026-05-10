@@ -27,9 +27,13 @@ CREATE TABLE tbl_colaboradores (
     data_contratacao DATE NOT NULL,
     email_colaborador VARCHAR(255) NOT NULL UNIQUE,
     cpf_colaborador CHAR(11) NOT NULL UNIQUE,
-    fk_id_supervisor INT NOT NULL,
+    fk_id_supervisor INT NULL,
     -- Chave estrangeira para evitar recursividade
-    CONSTRAINT fk_colaborador_supervisor FOREIGN KEY (fk_id_supervisor) REFERENCES tbl_colaboradores (id_colaboradores) ON DELETE RESTRICT
+    CONSTRAINT fk_colaborador_supervisor FOREIGN KEY (fk_id_supervisor) REFERENCES tbl_colaboradores (id_colaboradores) ON DELETE RESTRICT,
+    -- Verifica se os valores de CPF são válidos
+    CHECK (
+        cpf_colaborador REGEXP '^[0-9]{11}$'
+    )
 );
 
 CREATE TABLE tbl_produto (
@@ -97,7 +101,7 @@ CREATE TABLE tbl_endereco_cliente (
     pais_cliente VARCHAR(45) NOT NULL,
     cep_cliente VARCHAR(9) NOT NULL,
     fk_tbl_clientes_id_clientes INT NOT NULL UNIQUE,
-    CONSTRAINT fk_endereco_cliente_to_clientes FOREIGN KEY (fk_tbl_clientes_id_clientes) REFERENCES tbl_clientes (id_clientes)
+    CONSTRAINT fk_endereco_cliente_to_clientes FOREIGN KEY (fk_tbl_clientes_id_clientes) REFERENCES tbl_clientes (id_clientes) ON DELETE RESTRICT
 );
 
 CREATE TABLE tbl_vendas (
@@ -108,7 +112,7 @@ CREATE TABLE tbl_vendas (
     datahora_venda DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
     comissao_venda DECIMAL(10, 2) NOT NULL,
     numero_venda VARCHAR(45) NOT NULL UNIQUE,
-    forma_pagamento VARCHAR(45) NOT NULL,
+    forma_pagamento ENUM('Dinheiro', 'Cartão de Crédito', 'Cartão de Débito', 'PIX') NOT NULL,
     fk_tbl_colaboradores_id_colaboradores INT NOT NULL,
     fk_tbl_clientes_id_clientes INT NOT NULL,
     CONSTRAINT fk_vendas_to_colaboradores FOREIGN KEY (
@@ -117,8 +121,9 @@ CREATE TABLE tbl_vendas (
     CONSTRAINT fk_vendas_to_clientes FOREIGN KEY (fk_tbl_clientes_id_clientes) REFERENCES tbl_clientes (id_clientes) ON DELETE RESTRICT,
     -- Verifica se os valores são válidos ou positivos.
     CHECK (
-        valor_total > 0
+        valor_total_liquido > 0
         AND comissao_venda > 0
+        AND valor_desconto >= 0
     )
 );
 
@@ -132,7 +137,11 @@ CREATE TABLE tbl_historico_pontos (
     CONSTRAINT fk_historico_pontos_to_vendas FOREIGN KEY (fk_tbl_vendas_id_vendas) REFERENCES tbl_vendas (id_vendas) ON DELETE RESTRICT,
     CONSTRAINT fk_historico_pontos_to_fidelizacao FOREIGN KEY (
         fk_tbl_fidelizacao_id_fidelizacao
-    ) REFERENCES tbl_fidelizacao (id_fidelizacao) ON DELETE RESTRICT
+    ) REFERENCES tbl_fidelizacao (id_fidelizacao) ON DELETE RESTRICT,
+    -- Garante que ao menos uma origem esteja presente
+    CHECK (
+        fk_tbl_vendas_id_vendas IS NOT NULL OR fk_tbl_fidelizacao_id_fidelizacao IS NOT NULL
+    )
 );
 
 CREATE TABLE tbl_produto_venda (
@@ -144,4 +153,7 @@ CREATE TABLE tbl_produto_venda (
     CONSTRAINT fk_produto_venda_to_produto FOREIGN KEY (fk_tbl_produto_id_produto) REFERENCES tbl_produto (id_produto) ON DELETE RESTRICT,
     CONSTRAINT fk_produto_venda_to_vendas FOREIGN KEY (fk_tbl_vendas_id_vendas) REFERENCES tbl_vendas (id_vendas) ON DELETE RESTRICT,
     -- Verifica se os valores são válidos ou positivos.
+    CHECK (
+        preco_unitario_praticado > 0
+    )
 );
