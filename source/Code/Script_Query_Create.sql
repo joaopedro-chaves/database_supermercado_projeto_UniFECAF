@@ -33,7 +33,7 @@ CREATE TABLE tbl_produto (
     nome_produto VARCHAR(255) NOT NULL,
     tipo_produto VARCHAR(45) NOT NULL,
     valor_produto DECIMAL(10, 2) NOT NULL,
-    quantidade_produto INT NOT NOT NULL,
+    quantidade_produto INT NOT NULL,
     categoria_produto VARCHAR(45) NOT NULL
 );
 
@@ -63,10 +63,10 @@ CREATE TABLE tbl_clientes (
     num_cel_cliente VARCHAR(12) NOT NULL UNIQUE,
     email_cliente VARCHAR(255) NOT NULL UNIQUE,
     tbl_fidelizacao_id_fidelizacao INT, -- O cliente pode ou não ter um programa de fidelização, definido pela regra de negócio.
-    CONSTRAINT fk_clientes_to_fidelizacao FOREIGN KEY (tbl_fidelizacao_id_fidelizacao) REFERENCES tbl_fidelizacao (id_fidelizacao)
-
--- Verifica se os valores de CPF são válidos
-CHECK (cpf_cliente ~ '^[0-9]{11}$') );
+    CONSTRAINT fk_clientes_to_fidelizacao FOREIGN KEY (tbl_fidelizacao_id_fidelizacao) REFERENCES tbl_fidelizacao (id_fidelizacao),
+    -- Verifica se os valores de CPF são válidos
+    CHECK (cpf_cliente REGEXP '^[0-9]{11}$')
+);
 
 CREATE TABLE tbl_endereco_colaborador (
     id_endereco_colaborador INT PRIMARY KEY NOT NULL AUTO_INCREMENT,
@@ -104,10 +104,10 @@ CREATE TABLE tbl_vendas (
     CONSTRAINT fk_vendas_to_colaboradores FOREIGN KEY (
         fk_tbl_colaboradores_id_colaboradores
     ) REFERENCES tbl_colaboradores (id_colaboradores),
-    CONSTRAINT fk_vendas_to_clientes FOREIGN KEY (fk_tbl_clientes_id_clientes) REFERENCES tbl_clientes (id_clientes)
-
--- Verifica se os valores são válidos ou positivos.
-CHECK (valor_total > 0 AND comissao_venda > 0) );
+    CONSTRAINT fk_vendas_to_clientes FOREIGN KEY (fk_tbl_clientes_id_clientes) REFERENCES tbl_clientes (id_clientes),
+    -- Verifica se os valores são válidos ou positivos.
+    CHECK (valor_total > 0 AND comissao_venda > 0)
+);
 
 CREATE TABLE tbl_historico_pontos (
     id_historico_pontos INT PRIMARY KEY NOT NULL AUTO_INCREMENT,
@@ -129,7 +129,7 @@ CREATE TABLE tbl_produto_venda (
     fk_tbl_produto_id_produto INT NOT NULL,
     fk_tbl_vendas_id_vendas INT NOT NULL,
     CONSTRAINT fk_produto_venda_to_produto FOREIGN KEY (fk_tbl_produto_id_produto) REFERENCES tbl_produto (id_produto),
-    CONSTRAINT fk_produto_venda_to_vendas FOREIGN KEY (fk_tbl_vendas_id_vendas) REFERENCES tbl_vendas (id_vendas)
-
--- Verifica se os valores são válidos ou positivos.
-CHECK (quantidade_vendida > 0 AND valor_total_itens > 0) );
+    CONSTRAINT fk_produto_venda_to_vendas FOREIGN KEY (fk_tbl_vendas_id_vendas) REFERENCES tbl_vendas (id_vendas),
+    -- Verifica se os valores são válidos ou positivos.
+    CHECK (quantidade_vendida > 0 AND valor_total_itens > 0)
+);
