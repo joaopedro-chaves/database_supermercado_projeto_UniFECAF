@@ -41,7 +41,8 @@ CREATE TABLE tbl_produto (
     nome_produto VARCHAR(255) NOT NULL,
     tipo_produto VARCHAR(45) NOT NULL,
     valor_produto DECIMAL(10, 2) NOT NULL CHECK (valor_produto > 0),
-    categoria_produto VARCHAR(45) NOT NULL
+    categoria_produto VARCHAR(45) NOT NULL,
+    codigo_ean CHAR(13) NOT NULL UNIQUE
 );
 
 CREATE TABLE tbl_estoque (
