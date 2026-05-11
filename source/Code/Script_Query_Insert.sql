@@ -11,18 +11,13 @@ About the project: [https://github.com/joaopedro-chaves/database_supermercado_pr
 Project created for the discipline of Database Systems of UniFECAF.
 Projeto criado para a disciplina de Banco de Dados do UniFECAF
 
-This script was made by AI to facilitate the insertion and testing of data in the database.
-Este script foi feito pela AI para facilitar a inserção e teste de dados no banco de dados.
+NOTA: todos os dados abaixo são fictícios e foram gerados apenas para fins de demonstração.
+NOTE: all the data below are fictitious and were generated only for demonstration purposes.
 */
 
 USE db_supermercado;
 
 SET FOREIGN_KEY_CHECKS = 0;
-
--- ============================================================
--- tbl_colaborador
--- Inserir supervisores primeiro (fk_id_supervisor = NULL)
--- ============================================================
 
 INSERT INTO
     tbl_colaborador (
@@ -58,7 +53,6 @@ VALUES (
         NULL
     );
 
--- Inserir colaboradores vinculados aos supervisores
 INSERT INTO
     tbl_colaborador (
         nome_colaborador,
@@ -70,7 +64,7 @@ INSERT INTO
     )
 VALUES (
         'Ana Paula Ferreira',
-        'Caixa',
+        'Atendente',
         '2021-05-20',
         'ana.ferreira@supermercado.com',
         '44455566677',
@@ -78,7 +72,7 @@ VALUES (
     ),
     (
         'Lucas Martins Oliveira',
-        'Repositor',
+        'Atendente',
         '2022-08-14',
         'lucas.oliveira@supermercado.com',
         '55566677788',
@@ -86,7 +80,7 @@ VALUES (
     ),
     (
         'Juliana Ramos Pereira',
-        'Açougueiro',
+        'Gerente',
         '2020-11-03',
         'juliana.pereira@supermercado.com',
         '66677788899',
@@ -94,7 +88,7 @@ VALUES (
     ),
     (
         'Thiago Nascimento Silva',
-        'Caixa',
+        'Atendente',
         '2023-02-17',
         'thiago.silva@supermercado.com',
         '77788899900',
@@ -102,7 +96,7 @@ VALUES (
     ),
     (
         'Beatriz Carvalho Santos',
-        'Repositor',
+        'Atendente',
         '2021-09-30',
         'beatriz.santos@supermercado.com',
         '88899900011',
@@ -118,16 +112,12 @@ VALUES (
     ),
     (
         'Mariana Teixeira Barbosa',
-        'Caixa',
+        'Atendente',
         '2023-06-22',
         'mariana.barbosa@supermercado.com',
         '10011122233',
         1
     );
-
--- ============================================================
--- tbl_produto
--- ============================================================
 
 INSERT INTO
     tbl_produto (
@@ -278,10 +268,6 @@ VALUES (
         '7891234567809'
     );
 
--- ============================================================
--- tbl_estoque
--- ============================================================
-
 INSERT INTO
     tbl_estoque (
         data_validade,
@@ -431,10 +417,6 @@ VALUES (
         20
     );
 
--- ============================================================
--- tbl_fidelizacao
--- ============================================================
-
 INSERT INTO
     tbl_fidelizacao (
         data_cadastro,
@@ -513,10 +495,6 @@ VALUES (
         '2026-05-04',
         'Bebidas'
     );
-
--- ============================================================
--- tbl_cliente
--- ============================================================
 
 INSERT INTO
     tbl_cliente (
