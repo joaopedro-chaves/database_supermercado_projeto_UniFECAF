@@ -4,7 +4,7 @@ SQL Script para inserção de dados de exemplo no banco de dados.
 
 Author: João Pedro Vieira da Costa Chaves
 Date: 2026/05/08
-Version: 2.0.0
+Version: 2.1.0
 
 About the project: [https://github.com/joaopedro-chaves/database_supermercado_projeto_UniFECAF]
 
@@ -20,12 +20,12 @@ USE db_supermercado;
 SET FOREIGN_KEY_CHECKS = 0;
 
 -- ============================================================
--- tbl_colaboradores
+-- tbl_colaborador
 -- Inserir supervisores primeiro (fk_id_supervisor = NULL)
 -- ============================================================
 
 INSERT INTO
-    tbl_colaboradores (
+    tbl_colaborador (
         nome_colaborador,
         funcao_colaborador,
         data_contratacao,
@@ -51,7 +51,7 @@ VALUES (
     ),
     (
         'Roberto Alves Costa',
-        'Gerente Geral',
+        'Gerente',
         '2017-01-10',
         'roberto.costa@supermercado.com',
         '33344455566',
@@ -60,7 +60,7 @@ VALUES (
 
 -- Inserir colaboradores vinculados aos supervisores
 INSERT INTO
-    tbl_colaboradores (
+    tbl_colaborador (
         nome_colaborador,
         funcao_colaborador,
         data_contratacao,
@@ -134,148 +134,148 @@ INSERT INTO
         nome_produto,
         tipo_produto,
         valor_produto,
-        quantidade_produto,
-        categoria_produto
+        categoria_produto,
+        codigo_ean
     )
 VALUES (
         'Arroz Tipo 1 5kg',
         'Grão',
         18.90,
-        200,
-        'Mercearia'
+        'Mercearia',
+        '7891234567890'
     ),
     (
         'Feijão Carioca 1kg',
         'Grão',
         8.50,
-        150,
-        'Mercearia'
+        'Mercearia',
+        '7891234567891'
     ),
     (
         'Óleo de Soja 900ml',
         'Óleo',
         9.75,
-        180,
-        'Mercearia'
+        'Mercearia',
+        '7891234567892'
     ),
     (
         'Macarrão Espaguete 500g',
         'Massa',
         5.20,
-        300,
-        'Mercearia'
+        'Mercearia',
+        '7891234567893'
     ),
     (
         'Açúcar Refinado 1kg',
         'Açúcar',
         4.80,
-        250,
-        'Mercearia'
+        'Mercearia',
+        '7891234567894'
     ),
     (
         'Leite Integral 1L',
         'Laticínio',
         5.50,
-        400,
-        'Laticínios'
+        'Laticínios',
+        '7891234567895'
     ),
     (
         'Queijo Mussarela 250g',
         'Laticínio',
         14.90,
-        80,
-        'Laticínios'
+        'Laticínios',
+        '7891234567896'
     ),
     (
         'Iogurte Natural 170g',
         'Laticínio',
         3.90,
-        120,
-        'Laticínios'
+        'Laticínios',
+        '7891234567897'
     ),
     (
         'Peito de Frango Kg',
         'Carne',
         18.00,
-        90,
-        'Carnes'
+        'Carnes',
+        '7891234567898'
     ),
     (
         'Carne Moída Bovina Kg',
         'Carne',
         32.50,
-        60,
-        'Carnes'
+        'Carnes',
+        '7891234567899'
     ),
     (
         'Linguiça Calabresa 500g',
         'Embutido',
         13.40,
-        75,
-        'Carnes'
+        'Carnes',
+        '7891234567800'
     ),
     (
         'Pão de Forma Integral',
         'Panificação',
         8.20,
-        100,
-        'Padaria'
+        'Padaria',
+        '7891234567801'
     ),
     (
         'Biscoito Cream Cracker 200g',
         'Biscoito',
         4.50,
-        200,
-        'Biscoitos'
+        'Biscoitos',
+        '7891234567802'
     ),
     (
         'Refrigerante Cola 2L',
         'Bebida',
         10.90,
-        160,
-        'Bebidas'
+        'Bebidas',
+        '7891234567803'
     ),
     (
         'Água Mineral 1,5L',
         'Bebida',
         3.20,
-        300,
-        'Bebidas'
+        'Bebidas',
+        '7891234567804'
     ),
     (
         'Detergente Líquido 500ml',
         'Limpeza',
         3.80,
-        200,
-        'Limpeza'
+        'Limpeza',
+        '7891234567805'
     ),
     (
         'Sabão em Pó 1kg',
         'Limpeza',
         14.50,
-        100,
-        'Limpeza'
+        'Limpeza',
+        '7891234567806'
     ),
     (
         'Desinfetante 1L',
         'Limpeza',
         6.90,
-        130,
-        'Limpeza'
+        'Limpeza',
+        '7891234567807'
     ),
     (
         'Shampoo 400ml',
         'Higiene',
         18.90,
-        70,
-        'Higiene Pessoal'
+        'Higiene Pessoal',
+        '7891234567808'
     ),
     (
         'Papel Higiênico 12un',
         'Higiene',
         22.90,
-        150,
-        'Higiene Pessoal'
+        'Higiene Pessoal',
+        '7891234567809'
     );
 
 -- ============================================================
@@ -285,7 +285,7 @@ VALUES (
 INSERT INTO
     tbl_estoque (
         data_validade,
-        lote_produto,
+        lote_estoque,
         quantidade_estoque,
         data_entrada,
         fk_tbl_produto_id_produto
@@ -515,16 +515,16 @@ VALUES (
     );
 
 -- ============================================================
--- tbl_clientes
+-- tbl_cliente
 -- ============================================================
 
 INSERT INTO
-    tbl_clientes (
+    tbl_cliente (
         nome_cliente,
         cpf_cliente,
         num_cel_cliente,
         email_cliente,
-        tbl_fidelizacao_id_fidelizacao
+        fk_tbl_fidelizacao_id_fidelizacao
     )
 VALUES (
         'Marcos Vinícius Almeida',
@@ -603,12 +603,12 @@ VALUES (
 
 INSERT INTO
     tbl_endereco_colaborador (
-        rua,
-        bairro,
-        cidade,
-        pais,
-        cep,
-        fk_tbl_colaboradores_id_colaboradores
+        rua_colaborador,
+        bairro_colaborador,
+        cidade_colaborador,
+        pais_colaborador,
+        cep_colaborador,
+        fk_tbl_colaborador_id_colaborador
     )
 VALUES (
         'Rua das Flores, 45',
@@ -697,12 +697,12 @@ VALUES (
 
 INSERT INTO
     tbl_endereco_cliente (
-        rua,
-        bairro,
-        cidade,
-        pais,
-        cep,
-        fk_tbl_clientes_id_clientes
+        rua_cliente,
+        bairro_cliente,
+        cidade_cliente,
+        pais_cliente,
+        cep_cliente,
+        fk_tbl_cliente_id_cliente
     )
 VALUES (
         'Rua Tutóia, 340',
@@ -786,29 +786,35 @@ VALUES (
     );
 
 -- ============================================================
--- tbl_vendas
+-- tbl_venda
 -- ============================================================
 
 INSERT INTO
-    tbl_vendas (
-        valor_total,
+    tbl_venda (
+        valor_bruto,
+        valor_desconto,
+        valor_total_liquido,
         datahora_venda,
         comissao_venda,
         numero_venda,
         forma_pagamento,
-        fk_tbl_colaboradores_id_colaboradores,
-        fk_tbl_clientes_id_clientes
+        fk_tbl_colaborador_id_colaborador,
+        fk_tbl_cliente_id_cliente
     )
 VALUES (
+        152.40,
+        0.00,
         152.40,
         '2026-04-01 09:15:00',
         7.62,
         'VND-2026-0001',
-        'Cartão Crédito',
+        'Cartão de Crédito',
         4,
         1
     ),
     (
+        89.90,
+        0.00,
         89.90,
         '2026-04-02 10:30:00',
         4.50,
@@ -819,6 +825,8 @@ VALUES (
     ),
     (
         210.75,
+        0.00,
+        210.75,
         '2026-04-03 14:00:00',
         10.54,
         'VND-2026-0003',
@@ -828,23 +836,29 @@ VALUES (
     ),
     (
         47.20,
+        0.00,
+        47.20,
         '2026-04-05 08:45:00',
         2.36,
         'VND-2026-0004',
-        'Cartão Débito',
+        'Cartão de Débito',
         10,
         4
     ),
     (
         330.00,
+        0.00,
+        330.00,
         '2026-04-07 16:20:00',
         16.50,
         'VND-2026-0005',
-        'Cartão Crédito',
+        'Cartão de Crédito',
         7,
         5
     ),
     (
+        75.60,
+        0.00,
         75.60,
         '2026-04-10 11:05:00',
         3.78,
@@ -855,6 +869,8 @@ VALUES (
     ),
     (
         185.30,
+        0.00,
+        185.30,
         '2026-04-12 13:30:00',
         9.27,
         'VND-2026-0007',
@@ -864,23 +880,29 @@ VALUES (
     ),
     (
         62.80,
+        0.00,
+        62.80,
         '2026-04-15 09:00:00',
         3.14,
         'VND-2026-0008',
-        'Cartão Débito',
+        'Cartão de Débito',
         7,
         8
     ),
     (
         415.50,
+        0.00,
+        415.50,
         '2026-04-18 15:45:00',
         20.78,
         'VND-2026-0009',
-        'Cartão Crédito',
+        'Cartão de Crédito',
         4,
         9
     ),
     (
+        130.00,
+        0.00,
         130.00,
         '2026-04-20 10:10:00',
         6.50,
@@ -891,6 +913,8 @@ VALUES (
     ),
     (
         98.40,
+        0.00,
+        98.40,
         '2026-04-22 12:00:00',
         4.92,
         'VND-2026-0011',
@@ -900,23 +924,29 @@ VALUES (
     ),
     (
         240.90,
+        0.00,
+        240.90,
         '2026-04-24 14:30:00',
         12.05,
         'VND-2026-0012',
-        'Cartão Crédito',
+        'Cartão de Crédito',
         4,
         2
     ),
     (
         53.10,
+        0.00,
+        53.10,
         '2026-04-26 08:20:00',
         2.66,
         'VND-2026-0013',
-        'Cartão Débito',
+        'Cartão de Débito',
         10,
         3
     ),
     (
+        178.60,
+        0.00,
         178.60,
         '2026-04-28 17:00:00',
         8.93,
@@ -927,10 +957,12 @@ VALUES (
     ),
     (
         305.75,
+        0.00,
+        305.75,
         '2026-04-30 11:45:00',
         15.29,
         'VND-2026-0015',
-        'Cartão Crédito',
+        'Cartão de Crédito',
         4,
         5
     );
@@ -944,7 +976,7 @@ INSERT INTO
         entrada_pontos,
         saida_pontos,
         data_hora_pontos,
-        fk_tbl_vendas_id_vendas,
+        fk_tbl_venda_id_venda,
         fk_tbl_fidelizacao_id_fidelizacao
     )
 VALUES (
@@ -1060,71 +1092,71 @@ VALUES (
 INSERT INTO
     tbl_produto_venda (
         quantidade_vendida,
-        valor_total_itens,
+        preco_unitario_praticado,
         fk_tbl_produto_id_produto,
-        fk_tbl_vendas_id_vendas
+        fk_tbl_venda_id_venda
     )
 VALUES
     -- Venda 1 (VND-2026-0001): Arroz + Feijão + Óleo
-    (2, 37.80, 1, 1),
-    (3, 25.50, 2, 1),
-    (2, 19.50, 3, 1),
+    (2, 18.90, 1, 1),
+    (3, 8.50, 2, 1),
+    (2, 9.75, 3, 1),
     -- Venda 2 (VND-2026-0002): Leite + Queijo + Iogurte
-    (4, 22.00, 6, 2),
-    (2, 29.80, 7, 2),
-    (5, 19.50, 8, 2),
+    (4, 5.50, 6, 2),
+    (2, 14.90, 7, 2),
+    (5, 3.90, 8, 2),
     -- Venda 3 (VND-2026-0003): Frango + Carne Moída + Linguiça
-    (3, 54.00, 9, 3),
-    (2, 65.00, 10, 3),
-    (3, 40.20, 11, 3),
+    (3, 18.00, 9, 3),
+    (2, 32.50, 10, 3),
+    (3, 13.40, 11, 3),
     -- Venda 4 (VND-2026-0004): Biscoito + Refrigerante
-    (4, 18.00, 13, 4),
-    (2, 21.80, 14, 4),
+    (4, 4.50, 13, 4),
+    (2, 10.90, 14, 4),
     -- Venda 5 (VND-2026-0005): Shampoo + Sabão + Detergente + Papel Higiênico
-    (3, 56.70, 19, 5),
-    (4, 58.00, 17, 5),
-    (6, 22.80, 16, 5),
-    (4, 91.60, 20, 5),
+    (3, 18.90, 19, 5),
+    (4, 14.50, 17, 5),
+    (6, 3.80, 16, 5),
+    (4, 22.90, 20, 5),
     -- Venda 6 (VND-2026-0006): Macarrão + Açúcar
-    (6, 31.20, 4, 6),
-    (6, 28.80, 5, 6),
+    (6, 5.20, 4, 6),
+    (6, 4.80, 5, 6),
     -- Venda 7 (VND-2026-0007): Pão + Iogurte + Leite
-    (3, 24.60, 12, 7),
-    (4, 15.60, 8, 7),
-    (10, 55.00, 6, 7),
+    (3, 8.20, 12, 7),
+    (4, 3.90, 8, 7),
+    (10, 5.50, 6, 7),
     -- Venda 8 (VND-2026-0008): Água + Refrigerante
-    (6, 19.20, 15, 8),
-    (4, 43.60, 14, 8),
+    (6, 3.20, 15, 8),
+    (4, 10.90, 14, 8),
     -- Venda 9 (VND-2026-0009): Arroz + Feijão + Frango + Carne + Óleo
-    (4, 75.60, 1, 9),
-    (5, 42.50, 2, 9),
-    (4, 72.00, 9, 9),
-    (3, 97.50, 10, 9),
-    (3, 29.25, 3, 9),
+    (4, 18.90, 1, 9),
+    (5, 8.50, 2, 9),
+    (4, 18.00, 9, 9),
+    (3, 32.50, 10, 9),
+    (3, 9.75, 3, 9),
     -- Venda 10 (VND-2026-0010): Detergente + Desinfetante + Sabão
-    (4, 15.20, 16, 10),
-    (3, 20.70, 18, 10),
-    (4, 58.00, 17, 10),
+    (4, 3.80, 16, 10),
+    (3, 6.90, 18, 10),
+    (4, 14.50, 17, 10),
     -- Venda 11 (VND-2026-0011): Queijo + Leite + Biscoito
-    (2, 29.80, 7, 11),
-    (6, 33.00, 6, 11),
-    (5, 22.50, 13, 11),
+    (2, 14.90, 7, 11),
+    (6, 5.50, 6, 11),
+    (5, 4.50, 13, 11),
     -- Venda 12 (VND-2026-0012): Frango + Linguiça + Pão
-    (5, 90.00, 9, 12),
-    (4, 53.60, 11, 12),
-    (3, 24.60, 12, 12),
+    (5, 18.00, 9, 12),
+    (4, 13.40, 11, 12),
+    (3, 8.20, 12, 12),
     -- Venda 13 (VND-2026-0013): Água + Biscoito
-    (5, 16.00, 15, 13),
-    (4, 18.00, 13, 13),
+    (5, 3.20, 15, 13),
+    (4, 4.50, 13, 13),
     -- Venda 14 (VND-2026-0014): Shampoo + Papel Higiênico + Desinfetante
-    (3, 56.70, 19, 14),
-    (3, 68.70, 20, 14),
-    (3, 20.70, 18, 14),
+    (3, 18.90, 19, 14),
+    (3, 22.90, 20, 14),
+    (3, 6.90, 18, 14),
     -- Venda 15 (VND-2026-0015): Arroz + Feijão + Carne Moída + Óleo + Macarrão
-    (4, 75.60, 1, 15),
-    (5, 42.50, 2, 15),
-    (2, 65.00, 10, 15),
-    (3, 29.25, 3, 15),
-    (6, 31.20, 4, 15);
+    (4, 18.90, 1, 15),
+    (5, 8.50, 2, 15),
+    (2, 32.50, 10, 15),
+    (3, 9.75, 3, 15),
+    (6, 5.20, 4, 15);
 
 SET FOREIGN_KEY_CHECKS = 1;
