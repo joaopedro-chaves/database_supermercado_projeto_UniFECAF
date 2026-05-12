@@ -14,8 +14,7 @@ Projeto criado para a disciplina de Banco de Dados do UniFECAF.
 
 USE db_supermercado;
 
--- Listar todos os colaboradores e seus respectivos supervisores (Self Join)
--- Demonstra como relacionar a tabela de colaboradores com ela mesma.
+-- Listar todos os colaboradores e seus respectivos supervisores
 SELECT c.nome_colaborador AS 'Colaborador', c.funcao_colaborador AS 'Cargo', IFNULL(
         s.nome_colaborador, 'Sem Supervisor'
     ) AS 'Supervisor'
@@ -25,14 +24,12 @@ FROM
 ORDER BY s.nome_colaborador, c.nome_colaborador;
 
 -- Consultar o estoque de produtos, incluindo a categoria e ordenando pelos que vencem primeiro
--- Útil para o controle de validade dos produtos.
 SELECT p.nome_produto AS 'Produto', p.categoria_produto AS 'Categoria', e.lote_estoque AS 'Lote', e.quantidade_estoque AS 'Qtd em Estoque', DATE_FORMAT(e.data_validade, '%d/%m/%Y') AS 'Data de Validade'
 FROM tbl_estoque e
     INNER JOIN tbl_produto p ON e.fk_tbl_produto_id_produto = p.id_produto
 ORDER BY e.data_validade ASC;
 
 -- Calcular o valor total de vendas realizadas por cada colaborador
--- Agrupa as vendas por colaborador e soma o valor total, útil para relatórios de desempenho.
 SELECT c.nome_colaborador AS 'Colaborador', COUNT(v.id_venda) AS 'Total de Vendas', CONCAT(
         'R$ ',
         REPLACE (
@@ -53,7 +50,6 @@ GROUP BY
 ORDER BY SUM(v.valor_total_liquido) DESC;
 
 -- Listar os clientes (Top 5) com maior saldo de pontos de fidelização
--- Identifica os clientes mais fiéis e engajados com o supermercado.
 SELECT c.nome_cliente AS 'Cliente', c.cpf_cliente AS 'CPF', f.saldo_pontos AS 'Pontos', f.nivel_fidelizacao AS 'Nível', f.preferencias_categoria AS 'Preferência'
 FROM
     tbl_cliente c
@@ -62,7 +58,6 @@ ORDER BY f.saldo_pontos DESC
 LIMIT 5;
 
 -- Exibir os detalhes de uma venda específica (ex: a venda 'VND-2026-0005')
--- Mostra os produtos, quantidades e subtotais que compõem uma venda.
 SELECT v.numero_venda AS 'Nº da Venda', c.nome_cliente AS 'Cliente', p.nome_produto AS 'Produto', pv.quantidade_vendida AS 'Quantidade', CONCAT(
         'R$ ',
         REPLACE (
@@ -88,7 +83,6 @@ WHERE
 ORDER BY Subtotal DESC;
 
 -- Relatório de Vendas (Faturamento) por Categoria de Produto
--- Mostra quais categorias de produtos geram mais receita para o supermercado.
 SELECT p.categoria_produto AS 'Categoria', SUM(pv.quantidade_vendida) AS 'Quantidade Vendida', CONCAT(
         'R$ ',
         REPLACE (
@@ -109,7 +103,6 @@ ORDER BY SUM(
     ) DESC;
 
 -- Histórico de Pontos de um cliente específico detalhando entradas e saídas
--- Acompanha o fluxo de pontos gerados nas compras de um cliente pelo Nome.
 SELECT c.nome_cliente AS 'Cliente', hp.entrada_pontos AS 'Pontos Ganhos', hp.saida_pontos AS 'Pontos Usados', DATE_FORMAT(
         hp.data_hora_pontos, '%d/%m/%Y %H:%i'
     ) AS 'Data/Hora', v.numero_venda AS 'Nº da Venda Relacionada'
@@ -123,7 +116,6 @@ WHERE
 ORDER BY hp.data_hora_pontos DESC;
 
 -- Visão Geral de Endereços (Clientes vs Colaboradores)
--- Retorna os endereços separando se pertencem a um colaborador ou a um cliente.
 SELECT ec.rua_colaborador AS 'Rua', ec.bairro_colaborador AS 'Bairro', ec.cidade_colaborador AS 'Cidade', 'Colaborador' AS 'Tipo de Vínculo', c.nome_colaborador AS 'Nome'
 FROM
     tbl_endereco_colaborador ec

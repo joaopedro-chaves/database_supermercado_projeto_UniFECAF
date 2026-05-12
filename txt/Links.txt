@@ -1,5 +1,16 @@
 Roteiro:
 https://docs.google.com/document/d/1ynpXwaqkZ98f0I5gIR_gDKMIAAuTW80SrEstjZaLc74/edit?usp=sharing
 
+Parte Teórica:
+https://docs.google.com/document/d/1hgL-LvBpC7re7O3wqnojIQt7uTVg0actBqOh_KvCW_Q/edit?usp=sharing
+
+Parte Lógica:
+https://docs.google.com/document/d/1hgL-LvBpC7re7O3wqnojIQt7uTVg0actBqOh_KvCW_Q/edit?usp=sharing
+
+Apresentação:
+https://docs.google.com/presentation/d/1dYj-KUm9H3ChKnyXqUiiGKjLyOsaYQJlUwfxBoNjw4w/edit?usp=sharing
+
+Link para a Apresentação em video: [inserir link]
+
 Repositorio:
 https://github.com/joaopedro-chaves/database_supermercado_projeto_UniFECAF
