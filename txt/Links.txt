@@ -10,7 +10,8 @@ https://docs.google.com/document/d/1hgL-LvBpC7re7O3wqnojIQt7uTVg0actBqOh_KvCW_Q/
 Apresentação:
 https://docs.google.com/presentation/d/1dYj-KUm9H3ChKnyXqUiiGKjLyOsaYQJlUwfxBoNjw4w/edit?usp=sharing
 
-Link para a Apresentação em video: [inserir link]
+Link para a Apresentação em video: 
+https://youtu.be/UgwMBrCE3U4
 
 Repositorio:
 https://github.com/joaopedro-chaves/database_supermercado_projeto_UniFECAF
